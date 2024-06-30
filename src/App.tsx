@@ -1,6 +1,10 @@
 import Header from "./components/Header";
 import { inputContext } from "./inputContext";
 import { useState, useEffect } from "react";
+import { Button } from "./@/components/ui/button";
+import { TypographyP } from "./@/components/ui/TypographyP";
+import { TypographyLarge } from "./@/components/ui/TypographyLarge";
+import { TypographySmall } from "./@/components/ui/TypographySmall";
 interface Definition {
   definition: string;
   example?: string;
@@ -19,6 +23,7 @@ interface WordDetails {
 const App = () => {
   const [wordDetails, setWordDetails] = useState<WordDetails[] | null>();
   const [searchedWord, setSearchedWord] = useState("");
+  const [history, setHistory] = useState<string[]>([]);
   useEffect(() => {
     const fetchWordDetails = async () => {
       if (searchedWord) {
@@ -31,6 +36,9 @@ const App = () => {
           }
           const data = await response.json();
           setWordDetails(data);
+          setHistory((prevHistory) =>
+            Array.from(new Set([searchedWord, ...prevHistory]))
+          );
         } catch (error) {
           console.error("Error fetching word details:", error);
         }
@@ -47,23 +55,60 @@ const App = () => {
           ---------------------------------
           | Search a word      Search icon |
           ----------------------------------
+
+          Your previous searches:
         
         2) Body:
             Word: definition
             word is a 'pronoun/adjective/adverb/...'
             Example sentence:
       */}
-      <div className="max-w-6xl mx-auto">
+
+      {/* Container div */}
+      <div className="max-w-6xl mx-auto flex flex-col space-y-4">
         <Header />
-        {searchedWord && wordDetails && searchedWord && wordDetails && (
-          <div>
-            <h2 className="text-lg">
-              {wordDetails[0].word}:{" "}
-              {wordDetails[0].meanings[0].definitions[0].definition}
-            </h2>
-            <p>{wordDetails[0].word} is a {wordDetails[0].meanings[0].partOfSpeech}</p>
-            <p>Example sentence: {wordDetails[0].meanings[0].definitions[0].example}</p>
-          </div>
+        {/* Rendering history */}
+        <div className="flex items-center space-x-2">
+          <TypographyP>You searched for: </TypographyP>
+          {history.map((word) => (
+            <Button
+              title="Click to see definition"
+              key={word}
+              className="mr-3 rounded-full border-2 bg-primary-foreground text-primary hover:text-primary-foreground transition"
+              onClick={() => {
+                setSearchedWord(word);
+              }}
+            >
+              {word}
+            </Button>
+          ))}
+        </div>
+
+        {/* Rendering data */}
+        {searchedWord && wordDetails && wordDetails && (
+          <>
+            <div className="flex items-center space-x-1">
+              <TypographyLarge>{wordDetails[0].word}: </TypographyLarge>
+              <TypographyP>
+                {wordDetails[0].meanings[0].definitions[0].definition}
+              </TypographyP>
+            </div>
+            <div className="flex items-center space-x-1">
+              <TypographyLarge>Part of speech:</TypographyLarge>
+              <TypographyP>
+                {wordDetails[0].word} is a{" "}
+                <TypographySmall>
+                  {wordDetails[0].meanings[0].partOfSpeech}
+                </TypographySmall>
+              </TypographyP>
+            </div>
+            <div className="flex items-center space-x-1">
+              <TypographyLarge>Sample sentence: </TypographyLarge>
+              <TypographyP>
+                {wordDetails[0].meanings[0].definitions[0].example}
+              </TypographyP>
+            </div>
+          </>
         )}
       </div>
     </inputContext.Provider>
