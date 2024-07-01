@@ -17,6 +17,7 @@ import { useState, useEffect } from "react";
 import { TypographyP } from "./@/components/ui/TypographyP";
 import { TypographyLarge } from "./@/components/ui/TypographyLarge";
 import { Button } from "./@/components/ui/button";
+import { TypographySmall } from "./@/components/ui/TypographySmall";
 interface Definition {
   definition: string;
   example?: string;
@@ -69,6 +70,22 @@ const App = () => {
     };
     fetchWordDetails();
   }, [searchedWord]);
+  console.log(wordDetails)
+  let example = ""
+  if (wordDetails) {
+    for (const wordDetail of wordDetails) {
+      for (const meaning of wordDetail.meanings) {
+        for (const def of meaning.definitions) {
+          if (def.example) {
+            example = def.example;
+            break;
+          }
+        }
+        if (example) break;
+      }
+      if (example) break;
+    }
+  }
   return (
     <inputContext.Provider value={{ searchedWord, setSearchedWord }}>
       {/* Container div */}
@@ -76,10 +93,10 @@ const App = () => {
         <Header />
         {/* Rendering history */}
         <div className="flex items-center space-x-2">
-          <TypographyP>You searched for: </TypographyP>
+          {history.length > 0 && <TypographySmall>Search history:</TypographySmall>}
           {/* List of words fetched from local storage as buttons */}
           {history.map(word => (
-            <Button className="rounded-full bg-primary-foreground text-primary hover:text-primary-foreground" onClick={() => {setSearchedWord(word)}} key={word}>{word}</Button>
+            <Button className="rounded-full border shadow-sm bg-primary-foreground text-primary hover:text-primary-foreground" onClick={() => {setSearchedWord(word)}} key={word}>{word}</Button>
           ))}
         </div>
 
@@ -105,7 +122,7 @@ const App = () => {
             <div className="flex items-center space-x-1">
               <TypographyLarge>Sample sentence: </TypographyLarge>
               <TypographyP>
-                {!wordDetails[0].meanings[0].definitions[0].example?"No example":wordDetails[0].meanings[0].definitions[0].example}
+                {example}
               </TypographyP>
             </div>
           </>

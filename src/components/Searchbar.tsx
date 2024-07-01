@@ -18,6 +18,7 @@ const Searchbar = () => {
       {/* Input field */}
       <Input
       onChange={handleSearchChange}
+      required
         placeholder="Search a word"
         className="rounded-full border-none focus:outline-none"
       />
