@@ -19,6 +19,7 @@ import { TypographyLarge } from "./@/components/ui/TypographyLarge";
 import { Button } from "./@/components/ui/button";
 import { TypographySmall } from "./@/components/ui/TypographySmall";
 import { TypographyList } from "./@/components/ui/TypographyList";
+
 interface Definition {
   definition: string;
   example?: string;
@@ -94,10 +95,10 @@ const App = () => {
   return (
     <inputContext.Provider value={{ searchedWord, setSearchedWord }}>
       {/* Container div */}
-      <div className="max-w-6xl mx-auto flex flex-col space-y-4">
+      <div className="max-w-6xl mx-auto">
         <Header />
         {/* Rendering history */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center my-4 space-x-2">
           {history.length > 0 && (
             <TypographySmall>Search history:</TypographySmall>
           )}
@@ -118,7 +119,7 @@ const App = () => {
         {/* Rendering data */}
 
         {/* Render loading indicator */}
-        {loading && <h1>Loading...</h1>}
+        {loading && <p>Loading...</p>}
         {!loading && wordDetails && (
           <>
             {wordDetails[0].meanings[0].definitions.length > 1 ? (
@@ -133,14 +134,14 @@ const App = () => {
                 </TypographyList>
               </>
             ) : (
-              <div>
-                <TypographyLarge>
-                  Definition/meaning of {wordDetails[0].word}:{" "}
-                </TypographyLarge>
-                <TypographyP>{wordDetails[0].meanings[0].definitions[0].definition}</TypographyP>
+              <div className="flex items-center">
+                <TypographyLarge>{wordDetails[0].word}: </TypographyLarge>
+                <TypographyP>
+                  {wordDetails[0].meanings[0].definitions[0].definition}
+                </TypographyP>
               </div>
             )}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 my-4">
               <TypographyLarge>Part of speech:</TypographyLarge>
               <TypographyP>
                 {wordDetails[0].word} is a{" "}
@@ -148,26 +149,24 @@ const App = () => {
               </TypographyP>
             </div>
             {
-               // If there is no example in the definitions, don't render the example. Else render all the examples.
-               examples.length > 1 && (
+              // If there is no example in the definitions, don't render the example. Else render all the examples.
+              examples.length > 1 && (
                 <>
                   <TypographyLarge>Sample sentences:</TypographyLarge>
-                <TypographyList>
-                  {examples.map((example) => (
-                    <li key={example}>{example}</li>
-                  ))}
-                </TypographyList>
+                  <TypographyList>
+                    {examples.map((example) => (
+                      <li key={example}>{example}</li>
+                    ))}
+                  </TypographyList>
                 </>
               )
             }
-            {
-              examples.length===1 && (
-                <div className="flex items-center space-x-2">
-                  <TypographyLarge>Sample sentence</TypographyLarge>
-                  <TypographyP>{examples[0]}</TypographyP>
-                </div>
-              )
-            }
+            {examples.length === 1 && (
+              <div className="flex items-center space-x-2">
+                <TypographyLarge>Sample sentence</TypographyLarge>
+                <TypographyP>{examples[0]}</TypographyP>
+              </div>
+            )}
           </>
         )}
         {!loading && !wordDetails && searchedWord && (
@@ -179,3 +178,5 @@ const App = () => {
 };
 
 export default App;
+
+
