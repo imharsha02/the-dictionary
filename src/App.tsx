@@ -1,12 +1,13 @@
-// 1) Header:
+//  Header:
 //     The dictionary
 //     ---------------------------------
 //     | Search a word      Search icon |
 //     ----------------------------------
+//     Search history:
 
-//     Your previous searches:
+//    Body (When no word is searched)
 
-//   2) Body:
+//    Body (when a word is searched):
 //       Word: definition
 //       word is a 'pronoun/adjective/adverb/...'
 //       Example sentence:
@@ -91,7 +92,6 @@ const App = () => {
       }
     }
   }
-
   return (
     <inputContext.Provider value={{ searchedWord, setSearchedWord }}>
       {/* Container div */}
@@ -120,7 +120,7 @@ const App = () => {
 
         {/* Render loading indicator */}
         {loading && <p>Loading...</p>}
-        {!loading && wordDetails && (
+        {!loading && wordDetails ? (
           <>
             {wordDetails[0].meanings[0].definitions.length > 1 ? (
               <>
@@ -168,6 +168,12 @@ const App = () => {
               </div>
             )}
           </>
+        ) : (
+          // List of words along with alphabetical order sections
+          <>
+            {/* Alphabetical order sections */}
+            
+          </>
         )}
         {!loading && !wordDetails && searchedWord && (
           <h1>No data available for the searched word.</h1>
@@ -178,5 +184,3 @@ const App = () => {
 };
 
 export default App;
-
-
