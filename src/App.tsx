@@ -38,11 +38,11 @@ interface WordDetails {
 }
 
 const App = () => {
-  const [isSearchClicked,setIsSearchClicked] = useState(false);
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [wordDetails, setWordDetails] = useState<WordDetails[] | null>(null);
   const [searchedWord, setSearchedWord] = useState("");
   const [loading, setLoading] = useState(false);
-  const [searchingWord,setSearchingWord] = useState("");
+  const [searchingWord, setSearchingWord] = useState("");
   const [history, setHistory] = useState<string[]>(() => {
     const savedHistory = localStorage.getItem("History");
     return savedHistory ? JSON.parse(savedHistory) : [];
@@ -84,6 +84,7 @@ const App = () => {
   console.log(wordDetails);
 
   let examples: string[] = [];
+  const maxCount = 5;
   if (wordDetails) {
     for (const wordDetail of wordDetails) {
       for (const meaning of wordDetail.meanings) {
@@ -96,10 +97,28 @@ const App = () => {
     }
   }
   return (
-    <inputContext.Provider value={{ searchedWord, setSearchedWord, isSearchClicked,setIsSearchClicked,searchingWord,setSearchingWord }}>
+    <inputContext.Provider
+      value={{
+        searchedWord,
+        setSearchedWord,
+        isSearchClicked,
+        setIsSearchClicked,
+        searchingWord,
+        setSearchingWord,
+      }}
+    >
       {/* Container div */}
+
       <div className="max-w-6xl mx-auto">
-        <motion.div animate = {isSearchClicked || searchedWord !== ""?{y:0, scale:1}:{y:350, scale:1.5}} initial={{y:350, scale:1.5}} transition={{type:"spring", stiffness:50}}>
+        <motion.div
+          animate={
+            isSearchClicked || searchedWord !== ""
+              ? { y: 0, scale: 1 }
+              : { y: 350, scale: 1.5 }
+          }
+          initial={{ y: 350, scale: 1.5 }}
+          transition={{ type: "spring", stiffness: 45 }}
+        >
           <Header />
           {/* Rendering history */}
           <div className="flex items-center my-4 space-x-2">
@@ -131,7 +150,7 @@ const App = () => {
             {wordDetails[0].meanings[0].definitions.length > 1 ? (
               <>
                 <TypographyLarge>
-                  Definitions of {wordDetails[0].word}:{" "}
+                  Definitions of {wordDetails[0].word}{" "}
                 </TypographyLarge>
                 <TypographyList>
                   {wordDetails[0].meanings[0].definitions.map((definition) => (
