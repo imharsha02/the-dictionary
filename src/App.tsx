@@ -20,7 +20,7 @@ import { TypographyLarge } from "./@/components/ui/TypographyLarge";
 import { Button } from "./@/components/ui/button";
 import { TypographySmall } from "./@/components/ui/TypographySmall";
 import { TypographyList } from "./@/components/ui/TypographyList";
-import {motion} from 'framer-motion'
+import { motion } from "framer-motion";
 
 interface Definition {
   definition: string;
@@ -38,6 +38,7 @@ interface WordDetails {
 }
 
 const App = () => {
+  const [isSearchClicked,setIsSearchClicked] = useState(false);
   const [wordDetails, setWordDetails] = useState<WordDetails[] | null>(null);
   const [searchedWord, setSearchedWord] = useState("");
   const [loading, setLoading] = useState(false);
@@ -94,10 +95,10 @@ const App = () => {
     }
   }
   return (
-    <inputContext.Provider value={{ searchedWord, setSearchedWord }}>
+    <inputContext.Provider value={{ searchedWord, setSearchedWord, isSearchClicked,setIsSearchClicked }}>
       {/* Container div */}
       <div className="max-w-6xl mx-auto">
-        <motion.div>
+        <motion.div animate = {isSearchClicked || searchedWord !== ""?{y:0, scale:1}:{y:350, scale:1.5}} initial={{y:350, scale:1.5}} transition={{type:"spring", stiffness:50}}>
           <Header />
           {/* Rendering history */}
           <div className="flex items-center my-4 space-x-2">
@@ -107,7 +108,7 @@ const App = () => {
             {/* List of words fetched from local storage as buttons */}
             {history.map((word) => (
               <Button
-                className="rounded-full border shadow-sm bg-primary-foreground text-primary hover:text-primary-foreground"
+                className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
                 onClick={() => {
                   setSearchedWord(word);
                 }}
