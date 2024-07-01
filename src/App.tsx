@@ -16,6 +16,7 @@ import { inputContext } from "./inputContext";
 import { useState, useEffect } from "react";
 import { TypographyP } from "./@/components/ui/TypographyP";
 import { TypographyLarge } from "./@/components/ui/TypographyLarge";
+import { Button } from "./@/components/ui/button";
 interface Definition {
   definition: string;
   example?: string;
@@ -35,6 +36,10 @@ const App = () => {
   const [wordDetails, setWordDetails] = useState<WordDetails[] | null>(null);
   const [searchedWord, setSearchedWord] = useState("");
   const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState<string[]>(() => {
+    const savedHistory = localStorage.getItem("History");
+    return savedHistory ? JSON.parse(savedHistory):[]
+  });
   useEffect(() => {
     const fetchWordDetails = async () => {
       if (searchedWord) {
@@ -48,6 +53,12 @@ const App = () => {
           }
           const data = await response.json();
           setWordDetails(data);
+          setHistory((pervHistory) => {
+            const updatedHistory = pervHistory.filter((word) => word!==searchedWord)
+            const listOfSearchedWords = [searchedWord, ...updatedHistory]
+            localStorage.setItem("History",JSON.stringify(listOfSearchedWords));
+            return listOfSearchedWords;
+          })
         } catch (error) {
           console.error("Error fetching word details:", error);
           setWordDetails(null);
@@ -66,6 +77,10 @@ const App = () => {
         {/* Rendering history */}
         <div className="flex items-center space-x-2">
           <TypographyP>You searched for: </TypographyP>
+          {/* List of words fetched from local storage as buttons */}
+          {history.map(word => (
+            <Button className="rounded-full bg-primary-foreground text-primary hover:text-primary-foreground" onClick={() => {setSearchedWord(word)}} key={word}>{word}</Button>
+          ))}
         </div>
 
         {/* Rendering data */}
