@@ -42,6 +42,7 @@ const App = () => {
   const [wordDetails, setWordDetails] = useState<WordDetails[] | null>(null);
   const [searchedWord, setSearchedWord] = useState("");
   const [loading, setLoading] = useState(false);
+  const [searchingWord,setSearchingWord] = useState("");
   const [history, setHistory] = useState<string[]>(() => {
     const savedHistory = localStorage.getItem("History");
     return savedHistory ? JSON.parse(savedHistory) : [];
@@ -95,7 +96,7 @@ const App = () => {
     }
   }
   return (
-    <inputContext.Provider value={{ searchedWord, setSearchedWord, isSearchClicked,setIsSearchClicked }}>
+    <inputContext.Provider value={{ searchedWord, setSearchedWord, isSearchClicked,setIsSearchClicked,searchingWord,setSearchingWord }}>
       {/* Container div */}
       <div className="max-w-6xl mx-auto">
         <motion.div animate = {isSearchClicked || searchedWord !== ""?{y:0, scale:1}:{y:350, scale:1.5}} initial={{y:350, scale:1.5}} transition={{type:"spring", stiffness:50}}>
@@ -111,6 +112,7 @@ const App = () => {
                 className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
                 onClick={() => {
                   setSearchedWord(word);
+                  setSearchingWord(word);
                 }}
                 key={word}
               >
