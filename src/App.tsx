@@ -18,6 +18,7 @@ import { TypographyP } from "./@/components/ui/TypographyP";
 import { TypographyLarge } from "./@/components/ui/TypographyLarge";
 import { Button } from "./@/components/ui/button";
 import { TypographySmall } from "./@/components/ui/TypographySmall";
+import { TypographyList } from "./@/components/ui/TypographyList";
 interface Definition {
   definition: string;
   example?: string;
@@ -39,7 +40,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<string[]>(() => {
     const savedHistory = localStorage.getItem("History");
-    return savedHistory ? JSON.parse(savedHistory):[]
+    return savedHistory ? JSON.parse(savedHistory) : [];
   });
   useEffect(() => {
     const fetchWordDetails = async () => {
@@ -55,11 +56,16 @@ const App = () => {
           const data = await response.json();
           setWordDetails(data);
           setHistory((pervHistory) => {
-            const updatedHistory = pervHistory.filter((word) => word!==searchedWord)
-            const listOfSearchedWords = [searchedWord, ...updatedHistory]
-            localStorage.setItem("History",JSON.stringify(listOfSearchedWords));
+            const updatedHistory = pervHistory.filter(
+              (word) => word !== searchedWord
+            );
+            const listOfSearchedWords = [searchedWord, ...updatedHistory];
+            localStorage.setItem(
+              "History",
+              JSON.stringify(listOfSearchedWords)
+            );
             return listOfSearchedWords;
-          })
+          });
         } catch (error) {
           console.error("Error fetching word details:", error);
           setWordDetails(null);
@@ -70,22 +76,21 @@ const App = () => {
     };
     fetchWordDetails();
   }, [searchedWord]);
-  console.log(wordDetails)
-  let example = ""
+  console.log(wordDetails);
+
+  let examples: string[] = [];
   if (wordDetails) {
     for (const wordDetail of wordDetails) {
       for (const meaning of wordDetail.meanings) {
         for (const def of meaning.definitions) {
           if (def.example) {
-            example = def.example;
-            break;
+            examples.push(def.example);
           }
         }
-        if (example) break;
       }
-      if (example) break;
     }
   }
+
   return (
     <inputContext.Provider value={{ searchedWord, setSearchedWord }}>
       {/* Container div */}
@@ -93,10 +98,20 @@ const App = () => {
         <Header />
         {/* Rendering history */}
         <div className="flex items-center space-x-2">
-          {history.length > 0 && <TypographySmall>Search history:</TypographySmall>}
+          {history.length > 0 && (
+            <TypographySmall>Search history:</TypographySmall>
+          )}
           {/* List of words fetched from local storage as buttons */}
-          {history.map(word => (
-            <Button className="rounded-full border shadow-sm bg-primary-foreground text-primary hover:text-primary-foreground" onClick={() => {setSearchedWord(word)}} key={word}>{word}</Button>
+          {history.map((word) => (
+            <Button
+              className="rounded-full border shadow-sm bg-primary-foreground text-primary hover:text-primary-foreground"
+              onClick={() => {
+                setSearchedWord(word);
+              }}
+              key={word}
+            >
+              {word}
+            </Button>
           ))}
         </div>
 
@@ -106,12 +121,25 @@ const App = () => {
         {loading && <h1>Loading...</h1>}
         {!loading && wordDetails && (
           <>
-            <div className="flex items-center space-x-1">
-              <TypographyLarge>{wordDetails[0].word}: </TypographyLarge>
-              <TypographyP>
-                {wordDetails[0].meanings[0].definitions[0].definition}
-              </TypographyP>
-            </div>
+            {wordDetails[0].meanings[0].definitions.length > 1 ? (
+              <>
+                <TypographyLarge>
+                  Definitions of {wordDetails[0].word}:{" "}
+                </TypographyLarge>
+                <TypographyList>
+                  {wordDetails[0].meanings[0].definitions.map((definition) => (
+                    <li key={definition.definition}>{definition.definition}</li>
+                  ))}
+                </TypographyList>
+              </>
+            ) : (
+              <div>
+                <TypographyLarge>
+                  Definition/meaning of {wordDetails[0].word}:{" "}
+                </TypographyLarge>
+                <TypographyP>{wordDetails[0].meanings[0].definitions[0].definition}</TypographyP>
+              </div>
+            )}
             <div className="flex items-center space-x-1">
               <TypographyLarge>Part of speech:</TypographyLarge>
               <TypographyP>
@@ -119,12 +147,27 @@ const App = () => {
                 <i>{wordDetails[0].meanings[0].partOfSpeech}</i>
               </TypographyP>
             </div>
-            <div className="flex items-center space-x-1">
-              <TypographyLarge>Sample sentence: </TypographyLarge>
-              <TypographyP>
-                {example}
-              </TypographyP>
-            </div>
+            {
+               // If there is no example in the definitions, don't render the example. Else render all the examples.
+               examples.length > 1 && (
+                <>
+                  <TypographyLarge>Sample sentences:</TypographyLarge>
+                <TypographyList>
+                  {examples.map((example) => (
+                    <li key={example}>{example}</li>
+                  ))}
+                </TypographyList>
+                </>
+              )
+            }
+            {
+              examples.length===1 && (
+                <div className="flex items-center space-x-2">
+                  <TypographyLarge>Sample sentence</TypographyLarge>
+                  <TypographyP>{examples[0]}</TypographyP>
+                </div>
+              )
+            }
           </>
         )}
         {!loading && !wordDetails && searchedWord && (
