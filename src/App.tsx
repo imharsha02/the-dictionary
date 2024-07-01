@@ -20,6 +20,7 @@ import { TypographyLarge } from "./@/components/ui/TypographyLarge";
 import { Button } from "./@/components/ui/button";
 import { TypographySmall } from "./@/components/ui/TypographySmall";
 import { TypographyList } from "./@/components/ui/TypographyList";
+import {motion} from 'framer-motion'
 
 interface Definition {
   definition: string;
@@ -96,31 +97,33 @@ const App = () => {
     <inputContext.Provider value={{ searchedWord, setSearchedWord }}>
       {/* Container div */}
       <div className="max-w-6xl mx-auto">
-        <Header />
-        {/* Rendering history */}
-        <div className="flex items-center my-4 space-x-2">
-          {history.length > 0 && (
-            <TypographySmall>Search history:</TypographySmall>
-          )}
-          {/* List of words fetched from local storage as buttons */}
-          {history.map((word) => (
-            <Button
-              className="rounded-full border shadow-sm bg-primary-foreground text-primary hover:text-primary-foreground"
-              onClick={() => {
-                setSearchedWord(word);
-              }}
-              key={word}
-            >
-              {word}
-            </Button>
-          ))}
-        </div>
+        <motion.div>
+          <Header />
+          {/* Rendering history */}
+          <div className="flex items-center my-4 space-x-2">
+            {history.length > 0 && (
+              <TypographySmall>Search history:</TypographySmall>
+            )}
+            {/* List of words fetched from local storage as buttons */}
+            {history.map((word) => (
+              <Button
+                className="rounded-full border shadow-sm bg-primary-foreground text-primary hover:text-primary-foreground"
+                onClick={() => {
+                  setSearchedWord(word);
+                }}
+                key={word}
+              >
+                {word}
+              </Button>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Rendering data */}
 
         {/* Render loading indicator */}
         {loading && <p>Loading...</p>}
-        {!loading && wordDetails ? (
+        {!loading && wordDetails && (
           <>
             {wordDetails[0].meanings[0].definitions.length > 1 ? (
               <>
@@ -167,12 +170,6 @@ const App = () => {
                 <TypographyP>{examples[0]}</TypographyP>
               </div>
             )}
-          </>
-        ) : (
-          // List of words along with alphabetical order sections
-          <>
-            {/* Alphabetical order sections */}
-            
           </>
         )}
         {!loading && !wordDetails && searchedWord && (
