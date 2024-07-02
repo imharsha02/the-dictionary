@@ -1,17 +1,3 @@
-//  Header:
-//     The dictionary
-//     ---------------------------------
-//     | Search a word      Search icon |
-//     ----------------------------------
-//     Search history:
-
-//    Body (When no word is searched)
-
-//    Body (when a word is searched):
-//       Word: definition
-//       word is a 'pronoun/adjective/adverb/...'
-//       Example sentence:
-
 import Header from "./components/Header";
 import { inputContext } from "./inputContext";
 import { useState, useEffect } from "react";
@@ -115,9 +101,8 @@ const App = () => {
     if (slicedExamplesArray.length >= 1) {
       examplesToRender = slicedExamplesArray;
     }
-    console.log("Definitions: ", definitionsToRender)
-    console.log("Examples: ", examplesToRender)
   }
+  
   return (
     <inputContext.Provider
       value={{
@@ -129,83 +114,108 @@ const App = () => {
         setSearchingWord,
       }}
     >
-
       {/* Container div */}
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          animate={
-            isSearchClicked || searchedWord !== ""
-              ? { y: 0, scale: 1 }
-              : { y: 350, scale: 1.5 }
-          }
-          initial={{ y: 350, scale: 1.5 }}
-          transition={{ type: "spring", stiffness: 45 }}
-        >
-          <Header />
-          {/* Rendering history */}
-          <div className="flex items-center my-4 space-x-2">
-            {history.length > 0 && (
-              <TypographySmall>Search history:</TypographySmall>
-            )}
-            {/* List of words fetched from local storage as buttons */}
-            {history.map((word) => (
-              <Button
-                className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
-                onClick={() => {
-                  setSearchedWord(word);
-                  setSearchingWord(word);
-                }}
-                key={word}
-              >
-                {word}
-              </Button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Rendering data */}
-
-        {/* Render loading indicator */}
-        {loading && <p>Loading...</p>}
-        {!loading && wordDetails && (
-          <motion.div>
-            <TypographyLarge>
-              {definitionsToRender.length === 1
-                ? "Definition of"
-                : "Definitions of"}
-            </TypographyLarge>
-            <TypographyList
-              className={definitionsToRender.length === 1 ? "list-none" : ""}
-            >
-              {definitionsToRender.map((definition) => (
-                <li key={definition.definition}>{definition.definition}</li>
-              ))}
-            </TypographyList>
-
-            <div className="flex items-center space-x-1 my-4">
-              <TypographyLarge>Part of speech:</TypographyLarge>
-              <TypographyP>
-                {wordDetails[0].word} is a{" "}
-                <i>{wordDetails[0].meanings[0].partOfSpeech}</i>
-              </TypographyP>
-            </div>
-            {
-              // If there is no example in the definitions, don't render the example. Else render all the examples.
-              <>
-                <TypographyLarge>Sample sentences:</TypographyLarge>
-                <TypographyList>
-                  {examplesToRender.map((example) => (
-                    <li key={example}>{example}</li>
-                  ))}
-                </TypographyList>
-              </>
+      
+        <div className="bg-red-100 h-screen">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            animate={
+              isSearchClicked || searchedWord !== ""
+                ? { y: 0, scale: 1 }
+                : { y: 350, scale: 1.5 }
             }
+            initial={{ y: 350, scale: 1.5 }}
+            transition={{ type: "spring", stiffness: 45 }}
+          >
+            <Header />
+            {/* Rendering history */}
+            <div className="flex items-center my-4 space-x-2">
+              {history.length > 0 && (
+                <TypographySmall>Search history:</TypographySmall>
+              )}
+              {/* List of words fetched from local storage as buttons */}
+              {history.map((word) => (
+                <Button
+                  className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
+                  onClick={() => {
+                    setSearchedWord(word);
+                    setSearchingWord(word);
+                  }}
+                  key={word}
+                >
+                  {word}
+                </Button>
+              ))}
+            </div>
           </motion.div>
+
+          {/* Rendering data */}
+
+          {/* Render loading indicator */}
+          {loading && (
+            <motion.div
+            className="w-5 h-5 rounded-full bg-primary opacity-80"
+              animate={{ y: [1,10,1] }}
+              transition={{
+                loop: Infinity,
+                ease: "linear",
+              }}
+            >
+            </motion.div>
+          )}
+          {!loading && wordDetails && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+            >
+              <TypographyLarge>
+                {definitionsToRender.length === 1
+                  ? "Definition of"
+                  : "Definitions of"}
+              </TypographyLarge>
+              <TypographyList
+                className={definitionsToRender.length === 1 ? "list-none" : ""}
+              >
+                {definitionsToRender.map((definition) => (
+                  <li key={definition.definition}>{definition.definition}</li>
+                ))}
+              </TypographyList>
+
+              <div className="flex items-center space-x-1 my-4">
+                <TypographyLarge>Part of speech:</TypographyLarge>
+                <TypographyP>
+                  {wordDetails[0].word} is a{" "}
+                  <i>{wordDetails[0].meanings[0].partOfSpeech}</i>
+                </TypographyP>
+              </div>
+              {
+                // If there is no example in the definitions, don't render the example. Else render all the examples.
+                examplesToRender.length !== 0 && (
+                  <>
+                    <TypographyLarge>Sample sentences:</TypographyLarge>
+                    <TypographyList>
+                      {examplesToRender.map((example) => (
+                        <li key={example}>{example}</li>
+                      ))}
+                    </TypographyList>
+                  </>
+                )
+              }
+            </motion.div>
+          )}
+          {!loading && !wordDetails && searchedWord && (
+            <TypographyP className="text-red-500">
+              No data available for the searched word.
+            </TypographyP>
+          )}
+        </div>
+        {/* Suggest more words to search in the dictionary */}
+        {searchedWord && wordDetails && loading===false && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:2}} className="max-w-6xl mx-auto"><TypographyP>Suggest more words to search</TypographyP></motion.div>
         )}
-        {!loading && !wordDetails && searchedWord && (
-          <TypographyP className="text-red-500">No data available for the searched word.</TypographyP>
-        )}
-      </div>
+        </div>
+
     </inputContext.Provider>
   );
 };
