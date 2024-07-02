@@ -88,12 +88,12 @@ const App = () => {
   if (wordDetails) {
     const slicedDefinitionsArray = wordDetails[0].meanings[0].definitions.slice(
       0,
-      10
+      5
     );
     if (
       (slicedDefinitionsArray.length >= 1 &&
-        slicedDefinitionsArray.length < 10) ||
-      slicedDefinitionsArray.length === 10
+        slicedDefinitionsArray.length < 5) ||
+      slicedDefinitionsArray.length === 5
     ) {
       definitionsToRender = slicedDefinitionsArray;
     }
