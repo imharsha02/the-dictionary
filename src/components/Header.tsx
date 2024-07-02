@@ -1,17 +1,17 @@
 import Searchbar from "./Searchbar";
-import { TypographyH3 } from "../@/components/ui/TypographyH3";
+import { TypographyH2 } from "../@/components/ui/TypographyH2";
 
 
 const Header = () => {
 
   return (
     <div>
-      <TypographyH3
+      <TypographyH2
        
         className="text-2xl text-center py-3"
       >
-        The dictionary
-      </TypographyH3>
+        The Dictionary
+      </TypographyH2>
       {/* Search bar */}
       <Searchbar />
     </div>

@@ -7,6 +7,7 @@ import { Button } from "./@/components/ui/button";
 import { TypographySmall } from "./@/components/ui/TypographySmall";
 import { TypographyList } from "./@/components/ui/TypographyList";
 import { motion } from "framer-motion";
+import { TypographyH3 } from "./@/components/ui/TypographyH3";
 
 interface Definition {
   definition: string;
@@ -116,28 +117,57 @@ const App = () => {
     >
       {/* Container div */}
 
-      <div className="bg-red-100 h-screen">
+      <div className="bg-[url('https://tailwindui.com/img/beams-home@95.jpg')] h-screen">
         <div className="max-w-6xl mx-auto">
           <motion.div
             animate={
-              isSearchClicked || searchedWord !== ""
-                ? { y: 0, scale: 1 }
-                : { y: 350, scale: 1.5 }
+              (isSearchClicked || searchedWord !== "") && { y: 0, scale: 1 }
             }
             initial={{ y: 350, scale: 1.5 }}
             transition={{ type: "spring", stiffness: 45 }}
           >
             <Header />
+            {history.length>0&&(
+              <motion.p
+              animate={
+                (isSearchClicked || searchedWord !== "") && {
+                  display: "none",
+                  opacity: 0,
+                }
+              }
+              className="text-center mt-4"
+            >
+              OR
+            </motion.p>
+            )}
             {/* Rendering history */}
-            <div className="flex items-center my-4 space-x-2">
+            <motion.div
+              initial={{ x: 340, width: "512px" }}
+              animate={
+                (isSearchClicked || searchedWord !== "") && {
+                  x: 0,
+                  width: "1152px",
+                }
+              }
+              className={
+                isSearchClicked || searchedWord !== ""
+                  ? "flex items-center justify-center space-x-1 my-4"
+                  : "flex items-center justify-center space-x-[2px] my-4"
+              }
+            >
               {history.length > 0 && (
-                <TypographySmall>Search history:</TypographySmall>
+                <TypographySmall>
+                  {isSearchClicked || searchedWord !== ""
+                    ? "Recent searches"
+                    : "Find the meaning of"}
+                </TypographySmall>
               )}
               {/* List of words fetched from local storage as buttons */}
               <div className="flex flex-wrap gap-2">
                 {history.map((word) => (
                   <Button
                     className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
+                    title="Click to find meaning"
                     onClick={() => {
                       setSearchedWord(word);
                       setSearchingWord(word);
@@ -148,7 +178,24 @@ const App = () => {
                   </Button>
                 ))}
               </div>
-            </div>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ y: 400 }}
+            className="text-center max-w-xl mx-auto"
+            animate={
+              isSearchClicked || searchedWord
+                ? { display: "none", opacity: 0 }
+                : { display: "block", opacity: 1 }
+            }
+          >
+            <TypographyH3>Don't know what the word means?</TypographyH3>
+            <TypographyLarge className="font-normal">
+              Find out here! Fill the input field and hit enter. Click on one
+              our recent of the words to see their meaning. Don't type a second
+              time. Search for a word and know how to use it in a sentence
+            </TypographyLarge>
           </motion.div>
 
           {/* Rendering data */}
