@@ -129,8 +129,8 @@ const App = () => {
         setSearchingWord,
       }}
     >
-      {/* Container div */}
 
+      {/* Container div */}
       <div className="max-w-6xl mx-auto">
         <motion.div
           animate={
@@ -168,7 +168,7 @@ const App = () => {
         {/* Render loading indicator */}
         {loading && <p>Loading...</p>}
         {!loading && wordDetails && (
-          <>
+          <motion.div>
             <TypographyLarge>
               {definitionsToRender.length === 1
                 ? "Definition of"
@@ -200,10 +200,10 @@ const App = () => {
                 </TypographyList>
               </>
             }
-          </>
+          </motion.div>
         )}
         {!loading && !wordDetails && searchedWord && (
-          <h1>No data available for the searched word.</h1>
+          <TypographyP className="text-red-500">No data available for the searched word.</TypographyP>
         )}
       </div>
     </inputContext.Provider>
