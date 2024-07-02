@@ -84,7 +84,6 @@ const App = () => {
   console.log(wordDetails);
 
   let examples: string[] = [];
-  const maxCount = 5;
   if (wordDetails) {
     for (const wordDetail of wordDetails) {
       for (const meaning of wordDetail.meanings) {
@@ -95,6 +94,29 @@ const App = () => {
         }
       }
     }
+  }
+
+  // Logic to rendering limited number of definitions and examples
+  let definitionsToRender: Definition[] = [];
+  let examplesToRender: string[] = [];
+  if (wordDetails) {
+    const slicedDefinitionsArray = wordDetails[0].meanings[0].definitions.slice(
+      0,
+      5
+    );
+    if (
+      (slicedDefinitionsArray.length >= 1 &&
+        slicedDefinitionsArray.length < 5) ||
+      slicedDefinitionsArray.length === 5
+    ) {
+      definitionsToRender = slicedDefinitionsArray;
+    }
+    const slicedExamplesArray = examples.slice(0, 3);
+    if (slicedExamplesArray.length >= 1) {
+      examplesToRender = slicedExamplesArray;
+    }
+    console.log("Definitions: ", definitionsToRender)
+    console.log("Examples: ", examplesToRender)
   }
   return (
     <inputContext.Provider
@@ -147,25 +169,19 @@ const App = () => {
         {loading && <p>Loading...</p>}
         {!loading && wordDetails && (
           <>
-            {wordDetails[0].meanings[0].definitions.length > 1 ? (
-              <>
-                <TypographyLarge>
-                  Definitions of {wordDetails[0].word}{" "}
-                </TypographyLarge>
-                <TypographyList>
-                  {wordDetails[0].meanings[0].definitions.map((definition) => (
-                    <li key={definition.definition}>{definition.definition}</li>
-                  ))}
-                </TypographyList>
-              </>
-            ) : (
-              <div className="flex items-center">
-                <TypographyLarge>{wordDetails[0].word}: </TypographyLarge>
-                <TypographyP>
-                  {wordDetails[0].meanings[0].definitions[0].definition}
-                </TypographyP>
-              </div>
-            )}
+            <TypographyLarge>
+              {definitionsToRender.length === 1
+                ? "Definition of"
+                : "Definitions of"}
+            </TypographyLarge>
+            <TypographyList
+              className={definitionsToRender.length === 1 ? "list-none" : ""}
+            >
+              {definitionsToRender.map((definition) => (
+                <li key={definition.definition}>{definition.definition}</li>
+              ))}
+            </TypographyList>
+
             <div className="flex items-center space-x-1 my-4">
               <TypographyLarge>Part of speech:</TypographyLarge>
               <TypographyP>
@@ -175,23 +191,15 @@ const App = () => {
             </div>
             {
               // If there is no example in the definitions, don't render the example. Else render all the examples.
-              examples.length > 1 && (
-                <>
-                  <TypographyLarge>Sample sentences:</TypographyLarge>
-                  <TypographyList>
-                    {examples.map((example) => (
-                      <li key={example}>{example}</li>
-                    ))}
-                  </TypographyList>
-                </>
-              )
+              <>
+                <TypographyLarge>Sample sentences:</TypographyLarge>
+                <TypographyList>
+                  {examplesToRender.map((example) => (
+                    <li key={example}>{example}</li>
+                  ))}
+                </TypographyList>
+              </>
             }
-            {examples.length === 1 && (
-              <div className="flex items-center space-x-2">
-                <TypographyLarge>Sample sentence</TypographyLarge>
-                <TypographyP>{examples[0]}</TypographyP>
-              </div>
-            )}
           </>
         )}
         {!loading && !wordDetails && searchedWord && (
