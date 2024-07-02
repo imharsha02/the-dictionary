@@ -88,12 +88,12 @@ const App = () => {
   if (wordDetails) {
     const slicedDefinitionsArray = wordDetails[0].meanings[0].definitions.slice(
       0,
-      5
+      10
     );
     if (
       (slicedDefinitionsArray.length >= 1 &&
-        slicedDefinitionsArray.length < 5) ||
-      slicedDefinitionsArray.length === 5
+        slicedDefinitionsArray.length < 10) ||
+      slicedDefinitionsArray.length === 10
     ) {
       definitionsToRender = slicedDefinitionsArray;
     }
@@ -102,7 +102,7 @@ const App = () => {
       examplesToRender = slicedExamplesArray;
     }
   }
-  
+
   return (
     <inputContext.Provider
       value={{
@@ -115,8 +115,8 @@ const App = () => {
       }}
     >
       {/* Container div */}
-      
-        <div className="bg-red-100 h-screen">
+
+      <div className="bg-red-100 h-screen">
         <div className="max-w-6xl mx-auto">
           <motion.div
             animate={
@@ -134,18 +134,20 @@ const App = () => {
                 <TypographySmall>Search history:</TypographySmall>
               )}
               {/* List of words fetched from local storage as buttons */}
-              {history.map((word) => (
-                <Button
-                  className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
-                  onClick={() => {
-                    setSearchedWord(word);
-                    setSearchingWord(word);
-                  }}
-                  key={word}
-                >
-                  {word}
-                </Button>
-              ))}
+              <div className="flex flex-wrap gap-2">
+                {history.map((word) => (
+                  <Button
+                    className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
+                    onClick={() => {
+                      setSearchedWord(word);
+                      setSearchingWord(word);
+                    }}
+                    key={word}
+                  >
+                    {word}
+                  </Button>
+                ))}
+              </div>
             </div>
           </motion.div>
 
@@ -154,14 +156,13 @@ const App = () => {
           {/* Render loading indicator */}
           {loading && (
             <motion.div
-            className="w-5 h-5 rounded-full bg-primary opacity-80"
-              animate={{ y: [1,10,1] }}
+              className="w-5 h-5 rounded-full bg-primary opacity-80"
+              animate={{ y: [1, 20, 1] }}
               transition={{
                 loop: Infinity,
                 ease: "linear",
               }}
-            >
-            </motion.div>
+            ></motion.div>
           )}
           {!loading && wordDetails && (
             <motion.div
@@ -171,16 +172,20 @@ const App = () => {
             >
               <TypographyLarge>
                 {definitionsToRender.length === 1
-                  ? "Definition of"
-                  : "Definitions of"}
+                  ? `Definition of ${wordDetails[0].word}`
+                  : `Definitions of ${wordDetails[0].word}`}
               </TypographyLarge>
-              <TypographyList
-                className={definitionsToRender.length === 1 ? "list-none" : ""}
-              >
-                {definitionsToRender.map((definition) => (
-                  <li key={definition.definition}>{definition.definition}</li>
-                ))}
-              </TypographyList>
+              {definitionsToRender.length === 1 ? (
+                definitionsToRender.map((definition) => (
+                  <TypographyP>{definition.definition}</TypographyP>
+                ))
+              ) : (
+                <TypographyList>
+                  {definitionsToRender.map((definition) => (
+                    <li key={definition.definition}>{definition.definition}</li>
+                  ))}
+                </TypographyList>
+              )}
 
               <div className="flex items-center space-x-1 my-4">
                 <TypographyLarge>Part of speech:</TypographyLarge>
@@ -211,11 +216,17 @@ const App = () => {
           )}
         </div>
         {/* Suggest more words to search in the dictionary */}
-        {searchedWord && wordDetails && loading===false && (
-          <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:2}} className="max-w-6xl mx-auto"><TypographyP>Suggest more words to search</TypographyP></motion.div>
+        {searchedWord && wordDetails && loading === false && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
+            className="max-w-6xl mx-auto"
+          >
+            <TypographyP>Suggest more words to search</TypographyP>
+          </motion.div>
         )}
-        </div>
-
+      </div>
     </inputContext.Provider>
   );
 };
