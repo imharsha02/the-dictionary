@@ -262,17 +262,6 @@ const App = () => {
             </TypographyP>
           )}
         </div>
-        {/* Suggest more words to search in the dictionary */}
-        {searchedWord && wordDetails && loading === false && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
-            className="max-w-6xl mx-auto"
-          >
-            <TypographyP>Suggest more words to search</TypographyP>
-          </motion.div>
-        )}
       </div>
     </inputContext.Provider>
   );
