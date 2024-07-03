@@ -127,18 +127,18 @@ const App = () => {
             transition={{ type: "spring", stiffness: 45 }}
           >
             <Header />
-            {history.length>0&&(
+            {history.length > 0 && (
               <motion.p
-              animate={
-                (isSearchClicked || searchedWord !== "") && {
-                  display: "none",
-                  opacity: 0,
+                animate={
+                  (isSearchClicked || searchedWord !== "") && {
+                    display: "none",
+                    opacity: 0,
+                  }
                 }
-              }
-              className="text-center mt-4"
-            >
-              OR
-            </motion.p>
+                className="text-center mt-4"
+              >
+                OR
+              </motion.p>
             )}
             {/* Rendering history */}
             <motion.div
@@ -163,38 +163,45 @@ const App = () => {
                 </TypographySmall>
               )}
               {/* List of words fetched from local storage as buttons */}
-              <div className="flex flex-wrap gap-2">
-                {history.map((word) => (
-                  <Button
-                    className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
-                    title="Click to find meaning"
-                    onClick={() => {
-                      setSearchedWord(word);
-                      setSearchingWord(word);
-                    }}
-                    key={word}
-                  >
-                    {word}
-                  </Button>
-                ))}
-              </div>
+              {history.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {history.map((word) => (
+                    <Button
+                      className="rounded-full hover:scale-110 border shadow-sm bg-primary-foreground text-primary transition"
+                      title="Click to find meaning"
+                      onClick={() => {
+                        setSearchedWord(word);
+                        setSearchingWord(word);
+                      }}
+                      key={word}
+                    >
+                      {word}
+                    </Button>
+                  ))}
+                </div>
+              )}
             </motion.div>
           </motion.div>
 
           <motion.div
             initial={{ y: 400 }}
-            className="text-center max-w-xl mx-auto"
+            className={
+              history.length >= 9
+                ? "text-center max-w-xl mx-auto py-4"
+                : "text-center max-w-xl mx-auto"
+            }
             animate={
               isSearchClicked || searchedWord
                 ? { display: "none", opacity: 0 }
                 : { display: "block", opacity: 1 }
             }
           >
-            <TypographyH3>Don't know what the word means?</TypographyH3>
+            <TypographyH3>Don't know what a word means?</TypographyH3>
             <TypographyLarge className="font-normal">
-              Find out here! Fill the input field and hit enter. Click on one
-              our recent of the words to see their meaning. Don't type a second
-              time. Search for a word and know how to use it in a sentence
+              Find out here! Fill the input field and hit enter.
+              Click on one your recent and see their meaning; don't type a
+              second time. Search for a word and know how to use it in a
+              sentence
             </TypographyLarge>
           </motion.div>
 
